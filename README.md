@@ -1,8 +1,8 @@
-# Holos Render Action
+# Holos Action
 
-This GitHub Action executes the `holos render platform` command in your workflow
-to render your platform configuration.  Useful to fully render configuration
-manifests when configuration code, or input data chances.
+[Holos] GitHub action to execute the `holos render platform` command in your
+workflow.  Useful to fully render configuration manifests when configuration
+data changes, then update a pull request automatically.
 
 For an example of Kargo automatically bumping the version of add-ons and
 submitting pull requests, see the documentation on the [Holos Kargo
@@ -28,6 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: holos-run/holos-action@v1
+        with: # optional, default
+          command: holos render platform
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'
@@ -37,7 +39,39 @@ jobs:
           git push
 ```
 
+## Environment Variables
+
+You may need to pass an environment variable to `holos`, for example to access a
+[private helm](https://holos.run/docs/v1alpha5/topics/private-helm/) registry.
+
+Pass environment variables to the underlying container using the `flags` input.
+The value of this input is passed without modification to `docker run`.  For
+example:
+
+```yaml
+name: holos render platform
+on:
+  push:
+    branches:
+      - 'promotion/*'
+jobs:
+  holos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: holos-run/holos-action@v1
+        env:
+          USERNAME: ${{ vars.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        with:
+          command: holos render platform # optional
+          docker-run-flags: --env USERNAME --env PASSWORD
+```
+
 ## Support
 
-Community support is provided for `ubuntu-latest` runners only.  For additional
-commercial support options please see https://holos.run/docs/support/
+Community support is provided on a best effort basis.  For commercial support
+options please see [support].
+
+[Holos]: https://holos.run/docs/overview/
+[support]: https://holos.run/docs/support/

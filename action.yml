@@ -9,10 +9,10 @@ inputs:
     description: Holos command to execute
     required: false
     default: 'holos render platform'
-  env:
-    description: environment variables as a JSON string encoded object. (e.g. '{"KEY":"value"}')
+  flags:
+    description: flags for docker run (e.g. --env PASSWORD)
     required: false
-    default: '{}'
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -21,8 +21,6 @@ runs:
       run: docker pull --quiet ghcr.io/holos-run/holos:${{ inputs.version }}
     - name: "Run Holos"
       shell: bash
-      env: ${{ fromJSON(inputs.env) }}
       run: |
         # ${{ inputs.command }}
-        ENV_ARGS="$(jq -r 'keys | map("-e " + .) | join(" ")' <<<'${{ inputs.env }}')"
-        docker run -v $(pwd):/app --workdir /app $ENV_ARGS --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }}
+        docker run -v $(pwd):/app --workdir /app ${{ inputs.flags }} --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }}
