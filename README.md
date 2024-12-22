@@ -13,7 +13,7 @@ integration](https://holos.run/docs/kargo/).
 The following example workflow renders manifests and commits the result to the
 same branch.  Useful for integration with Kargo.
 
-```
+```yaml
 # .github/workflows/holos-render-platform.yaml
 name: holos render platform
 on:
