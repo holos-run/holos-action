@@ -1,0 +1,30 @@
+name: "Holos"
+description: "Platform configuration with https://holos.run"
+inputs:
+  version:
+    description: Holos version to execute (e.g. v0.102.1)
+    required: false
+    default: 'v0.102.1'
+  command:
+    description: Holos command to execute
+    required: false
+    default: 'holos render platform'
+  build-tags:
+    description: CUE Build Tags to set as a comma separated list
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: "Pull Image"
+      shell: bash
+      run: docker pull --quiet ghcr.io/holos-run/holos:${{ inputs.version }}
+    - name: "Render Manifests"
+      shell: bash
+      run: |
+        # holos render platform
+        CMD="${{ inputs.command }}"
+        if [[ -n "${{ inputs.build-tags }}" ]]; then
+          CMD="${CMD} --inject=${{inputs.build-tags}}"
+        fi
+        docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:${{ inputs.version }} $CMD
