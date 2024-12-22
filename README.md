@@ -27,7 +27,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: holos-run/holos-action@v1
+      - uses: holos-run/holos-action@v0
+        with:
+          command: holos render platform --inject=${{ github.repository_owner }}
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'

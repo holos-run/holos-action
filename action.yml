@@ -1,5 +1,5 @@
-name: "Holos"
-description: "Platform configuration with https://holos.run"
+name: "Run Holos"
+description: "Manage configuration with Holos"
 inputs:
   version:
     description: Holos version to execute (e.g. v0.102.1)
@@ -9,28 +9,14 @@ inputs:
     description: Holos command to execute
     required: false
     default: 'holos render platform'
-  build-tags:
-    description: CUE Build Tags to set as a comma separated list
-    required: false
-    default: ''
 runs:
   using: "composite"
   steps:
-    - name: "Pull Image"
+    - name: "Setup Holos"
       shell: bash
       run: docker pull --quiet ghcr.io/holos-run/holos:${{ inputs.version }}
-    - name: "Flags"
-      id: flags
+    - name: "Run Holos"
       shell: bash
       run: |
-        # flags
-        FLAGS=""
-        if [[ -n "${{ inputs.build-tags }}" ]]; then
-          FLAGS="${FLAGS} --inject='${{inputs.build-tags}}'"
-        fi
-        echo "flags=${FLAGS}" >> $GITHUB_OUTPUT
-    - name: "Render Manifests"
-      shell: bash
-      run: |
-        # ${{ inputs.command }} ${{ steps.flags.outputs.flags}}
-        docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }} ${{ steps.flags.outputs.flags}}
+        # ${{ inputs.command }}
+        docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }}
