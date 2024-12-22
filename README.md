@@ -11,7 +11,7 @@ integration](https://holos.run/docs/kargo/).
 ## Usage
 
 The following example workflow renders manifests and commits the result to the
-same branch.  Useful for integration with Kargo.
+same branch, useful to see fully rendered configs in pull requests.
 
 ```yaml
 # .github/workflows/holos-render-platform.yaml
@@ -19,7 +19,7 @@ name: holos render platform
 on:
   push:
     branches:
-      - 'kargo/promotion/*'
+      - 'promotion/*'
 jobs:
   holos:
     runs-on: ubuntu-latest
@@ -27,9 +27,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: holos-run/holos-action@v0
-        with:
-          command: holos render platform --inject=${{ github.repository_owner }}
+      - uses: holos-run/holos-action@v1
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'
