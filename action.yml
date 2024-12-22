@@ -22,7 +22,7 @@ runs:
     - name: "Render Manifests"
       shell: bash
       run: |
-        # holos render platform
+        # ${{ inputs.command }}
         CMD="${{ inputs.command }}"
         if [[ -n "${{ inputs.build-tags }}" ]]; then
           CMD="${CMD} --inject=${{inputs.build-tags}}"
