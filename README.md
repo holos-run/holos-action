@@ -36,3 +36,8 @@ jobs:
           git commit -m "holos render platform [skip ci]" || echo "No changes to commit"
           git push
 ```
+
+## Support
+
+Community support is provided for `ubuntu-latest` runners only.  For additional
+commercial support options please see https://holos.run/docs/support/
