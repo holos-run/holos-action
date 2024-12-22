@@ -19,12 +19,18 @@ runs:
     - name: "Pull Image"
       shell: bash
       run: docker pull --quiet ghcr.io/holos-run/holos:${{ inputs.version }}
+    - name: "Flags"
+      id: flags
+      shell: bash
+      run: |
+        # flags
+        FLAGS=""
+        if [[ -n "${{ inputs.build-tags }}" ]]; then
+          FLAGS="${FLAGS} --inject='${{inputs.build-tags}}'"
+        fi
+        echo "flags=${FLAGS}" >> $GITHUB_OUTPUT
     - name: "Render Manifests"
       shell: bash
       run: |
-        # ${{ inputs.command }}
-        CMD="${{ inputs.command }}"
-        if [[ -n "${{ inputs.build-tags }}" ]]; then
-          CMD="${CMD} --inject=${{inputs.build-tags}}"
-        fi
-        docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:${{ inputs.version }} $CMD
+        # ${{ inputs.command }} ${{ steps.flags.outputs.flags}}
+        docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }} ${{ steps.flags.outputs.flags}}
