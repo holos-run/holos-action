@@ -10,10 +10,12 @@ TOPLEVEL="$(cd $(dirname "$0") && git rev-parse --show-toplevel)"
 cd "$TOPLEVEL"
 
 VERSION="$1"
+HOLOS="ghcr.io/holos-run/holos:v0.102.1"
 
 set -x
 
-docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:v0.102.1 \
+docker pull --quiet $HOLOS
+docker run -v $(pwd):/app --workdir /app --rm $HOLOS  \
   holos cue export --out yaml action.cue -t "version=${VERSION}" > action.yml
 
 git config --global user.name 'GitHub Actions'
