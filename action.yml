@@ -1,26 +1,26 @@
-name: "Run Holos"
-description: "Manage configuration with Holos"
+name: Run Holos
+description: Manage configuration with Holos
 inputs:
   version:
     description: Holos version to execute (e.g. v0.102.1)
     required: false
-    default: 'v0.102.1'
+    default: v0.102.1
   command:
     description: Holos command to execute
     required: false
-    default: 'holos render platform'
+    default: holos render platform
   flags:
     description: flags for docker run (e.g. --env PASSWORD)
     required: false
-    default: ''
+    default: ""
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: "Setup Holos"
+    - name: Setup Holos
       shell: bash
       run: docker pull --quiet ghcr.io/holos-run/holos:${{ inputs.version }}
-    - name: "Run Holos"
+    - name: Run Holos
       shell: bash
-      run: |
+      run: |-
         # ${{ inputs.command }}
         docker run -v $(pwd):/app --workdir /app ${{ inputs.flags }} --rm ghcr.io/holos-run/holos:${{ inputs.version }} ${{inputs.command }}
