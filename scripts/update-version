@@ -1,0 +1,23 @@
+#! /bin/bash
+#
+# Update the version of the container image used in the action.  Intended to be
+# called from
+# https://github.com/holos-run/holos/blob/main/.github/workflows/container.yaml
+
+set -euo pipefail
+
+TOPLEVEL="$(cd $(dirname "$0") && git rev-parse --show-toplevel)"
+cd "$TOPLEVEL"
+
+VERSION="$1"
+
+set -x
+
+docker run -v $(pwd):/app --workdir /app --rm ghcr.io/holos-run/holos:v0.102.1 \
+  holos cue export --out yaml action.cue -t "version=${VERSION}" > action.yml
+
+git config --global user.name 'GitHub Actions'
+git config --global user.email 'actions@github.com'
+git add action.yml
+git commit -m "update holos to ${VERSION} [skip ci]" || (echo "No changes to commit"; exit 0)
+git push origin HEAD:main HEAD:v0 HEAD:v1
