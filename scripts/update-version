@@ -17,7 +17,3 @@ set -x
 docker pull --quiet $HOLOS
 docker run -v $(pwd):/app --workdir /app --rm $HOLOS  \
   holos cue export --out yaml action.cue -t "version=${VERSION}" > action.yml
-
-git add action.yml
-git commit -m "update holos to ${VERSION} [skip ci]" || (echo "No changes to commit"; exit 0)
-git push origin HEAD:main HEAD:v0 HEAD:v1

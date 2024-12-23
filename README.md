@@ -27,26 +27,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - run: rm -rf deploy
       - uses: holos-run/holos-action@v1
-        with: # optional, default
-          command: holos render platform
+        with:
+          version: v0.102.1 # optional, defaults to latest
+          command: holos render platform # optional default
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
-          git add deploy/
+          git add deploy
           git commit -m "holos render platform [skip ci]" || echo "No changes to commit"
           git push
 ```
 
 ## Environment Variables
 
-You may need to pass an environment variable to `holos`, for example to access a
-[private helm](https://holos.run/docs/v1alpha5/topics/private-helm/) registry.
-
-Pass environment variables to the underlying container using the `flags` input.
-The value of this input is passed without modification to `docker run`.  For
-example:
+Pass environment variables using the `flags` input.  The value of this input is
+passed without modification to `docker run`.  Useful to to access a [private
+helm] registry.  For example:
 
 ```yaml
 name: holos render platform
@@ -65,7 +64,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         with:
           command: holos render platform # optional
-          docker-run-flags: --env USERNAME --env PASSWORD
+          flags: --env USERNAME --env PASSWORD
 ```
 
 ## Support
@@ -75,3 +74,4 @@ options please see [support].
 
 [Holos]: https://holos.run/docs/overview/
 [support]: https://holos.run/docs/support/
+[private helm]: https://holos.run/docs/v1alpha5/topics/private-helm/
