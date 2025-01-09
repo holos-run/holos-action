@@ -2,9 +2,9 @@ name: Run Holos
 description: Manage configuration with Holos
 inputs:
   version:
-    description: Holos version to execute (e.g. v0.102.4)
+    description: Holos version to execute (e.g. v0.102.5)
     required: false
-    default: v0.102.4
+    default: v0.102.5
   command:
     description: Holos command to execute
     required: false
